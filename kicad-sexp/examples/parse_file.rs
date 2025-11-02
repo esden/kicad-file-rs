@@ -16,9 +16,9 @@ fn main() {
             println!();
         },
         Err(err) => {
-            println!("Parse failed. Errors are:");
+            eprintln!("Parse failed. Errors are:");
             for e in err {
-                println!("{}", e);
+                eprintln!("{}", e);
             }
         },
     }
