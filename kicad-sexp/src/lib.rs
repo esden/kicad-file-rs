@@ -11,6 +11,12 @@ pub enum Sexp<'a> {
     List(Vec<Self>)
 }
 
+fn parse_end<'src>() -> impl Parser<'src, &'src str, (), extra::Err<Simple<'src, char>>> + Copy {
+    one_of(" \n\t")
+        .or(just(')').rewind()).ignored()
+        .then_ignore(one_of(" \n\t").repeated())
+}
+
 fn parse_escape<'src>() -> impl Parser<'src, &'src str, char, extra::Err<Simple<'src, char>>> + Copy {
     just('\\')
         .ignore_then(choice((
@@ -27,16 +33,14 @@ fn parse_string<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Si
         .repeated()
         .to_slice()
         .delimited_by(just('\"'), just('\"'))
-        .then_ignore(one_of(" \n\t)").repeated().at_least(1).rewind())
-        .padded()
+        .then_ignore(parse_end())
 }
 
 fn parse_int<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simple<'src, char>>> + Copy {
     just('-').or_not()
         .then(text::digits(10))
         .to_slice()
-        .then_ignore(one_of(" \n\t)").repeated().at_least(1).rewind())
-        .padded()
+        .then_ignore(parse_end())
 }
 
 fn parse_hexint64<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simple<'src, char>>> + Copy {
@@ -49,8 +53,7 @@ fn parse_hexint64<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<
         .then(just('_'))
         .then(text::digits(16).exactly(8))
         .to_slice()
-        .then_ignore(one_of(" \n\t)").repeated().at_least(1).rewind())
-        .padded()
+        .then_ignore(parse_end())
 }
 
 fn parse_float<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simple<'src, char>>> + Copy {
@@ -59,8 +62,7 @@ fn parse_float<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Sim
         .then(just('.'))
         .then(text::digits(10))
         .to_slice()
-        .then_ignore(one_of(" \n\t)").repeated().at_least(1).rewind())
-        .padded()
+        .then_ignore(parse_end())
 }
 
 fn parse_symbol<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simple<'src, char>>> + Copy {
@@ -68,8 +70,7 @@ fn parse_symbol<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Si
         .repeated()
         .at_least(1)
         .to_slice()
-        .then_ignore(one_of(" \n\t)").repeated().at_least(1).rewind())
-        .padded()
+        .then_ignore(parse_end())
 }
 
 pub fn parser<'a>() -> impl Parser<'a, &'a str, Vec<Sexp<'a>>, extra::Err<Simple<'a, char>>> {
