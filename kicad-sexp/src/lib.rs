@@ -12,8 +12,11 @@ pub enum Sexp<'a> {
 }
 
 fn parse_end<'src>() -> impl Parser<'src, &'src str, (), extra::Err<Simple<'src, char>>> + Copy {
-    whitespace()
-        .or(just(')').ignored().rewind())
+    choice((
+        whitespace(),
+        just(')').ignored().rewind(),
+        end(),
+    ))
         .then_ignore(whitespace())
 }
 
@@ -131,10 +134,10 @@ mod tests {
     fn string() {
         let parser = parse_string();
 
-        assert_eq!(parser.parse("\"\\\\\" ").unwrap(), "\\\\");
-        assert_eq!(parser.parse("\"\\\"\" ").unwrap(), "\\\"");
-        assert_eq!(parser.parse("\"\\n\" ").unwrap(), "\\n");
-        assert_eq!(parser.parse("\"\\t\" ").unwrap(), "\\t");
+        assert_eq!(parser.parse("\"\\\\\"").unwrap(), "\\\\");
+        assert_eq!(parser.parse("\"\\\"\"").unwrap(), "\\\"");
+        assert_eq!(parser.parse("\"\\n\"").unwrap(), "\\n");
+        assert_eq!(parser.parse("\"\\t\"").unwrap(), "\\t");
         assert_eq!(parser.parse("\"this is a normal string\" ").unwrap(), "this is a normal string");
     }
 
@@ -156,8 +159,8 @@ mod tests {
     fn float() {
         let parser = parse_float();
 
-        assert_eq!(parser.parse("-123.123456 ").unwrap(), "-123.123456");
-        assert_eq!(parser.parse("321.6543210 ").unwrap(), "321.6543210");
+        assert_eq!(parser.parse("-123.123456").unwrap(), "-123.123456");
+        assert_eq!(parser.parse("321.6543210").unwrap(), "321.6543210");
     }
 
     #[test]
