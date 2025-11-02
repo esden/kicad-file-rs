@@ -1,4 +1,4 @@
-use chumsky::prelude::*;
+use chumsky::{prelude::*, text::whitespace};
 
 #[derive(Clone, Debug)]
 pub enum Sexp<'a> {
@@ -12,9 +12,9 @@ pub enum Sexp<'a> {
 }
 
 fn parse_end<'src>() -> impl Parser<'src, &'src str, (), extra::Err<Simple<'src, char>>> + Copy {
-    one_of(" \n\t")
-        .or(just(')').rewind()).ignored()
-        .then_ignore(one_of(" \n\t").repeated())
+    whitespace()
+        .or(just(')').ignored().rewind())
+        .then_ignore(whitespace())
 }
 
 fn parse_escape<'src>() -> impl Parser<'src, &'src str, char, extra::Err<Simple<'src, char>>> + Copy {
