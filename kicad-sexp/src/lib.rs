@@ -104,9 +104,9 @@ pub fn pretty_print(sexps: &Vec<Sexp>) {
             Sexp::Invalid => print!("Inv "),
             Sexp::Symbol(symbol) => print!("ʆ{} ", symbol),
             Sexp::StringLiteral(str_literal) => print!("\"{}\" ", str_literal),
-            Sexp::IntLiteral(num_literal) => print!("ŋ{} ", num_literal),
-            Sexp::HexIntLiteral(num_literal) => print!("ŋ{} ", num_literal),
-            Sexp::FloatLiteral(num_literal) => print!("ŋ{} ", num_literal),
+            Sexp::IntLiteral(num_literal) => print!("iŋ{} ", num_literal),
+            Sexp::HexIntLiteral(num_literal) => print!("xŋ{} ", num_literal),
+            Sexp::FloatLiteral(num_literal) => print!("fŋ{} ", num_literal),
             Sexp::List(sexps) => {
                 print!("(");
                 pretty_print(sexps);
