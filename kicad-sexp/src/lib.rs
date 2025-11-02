@@ -47,7 +47,7 @@ fn parse_int<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simpl
 }
 
 fn parse_hexint64<'src>() -> impl Parser<'src, &'src str, &'src str, extra::Err<Simple<'src, char>>> + Copy {
-    just("0x").or_not()
+    just("0x")
         .then(text::digits(16).exactly(8))
         .then(just('_'))
         .then(text::digits(16).exactly(8))
