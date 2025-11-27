@@ -121,7 +121,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn escape() {
+    fn escape_parser() {
         let parser = parse_escape();
 
         assert_eq!(parser.parse("\\\\").unwrap(), '\\');
@@ -131,7 +131,7 @@ mod tests {
     }
 
     #[test]
-    fn string() {
+    fn string_parser() {
         let parser = parse_string();
 
         assert_eq!(parser.parse("\"\\\\\"").unwrap(), "\\\\");
@@ -142,21 +142,21 @@ mod tests {
     }
 
     #[test]
-    fn int() {
+    fn int_parser() {
         let parser = parse_int();
 
         assert_eq!(parser.parse("12345 ").unwrap(), "12345");
     }
 
     #[test]
-    fn hexint64() {
+    fn hexint64_parser() {
         let parser = parse_hexint64();
 
         assert_eq!(parser.parse("0xdeadbeef_beefdead_44552255_12345678 ").unwrap(), "0xdeadbeef_beefdead_44552255_12345678");
     }
 
     #[test]
-    fn float() {
+    fn float_parser() {
         let parser = parse_float();
 
         assert_eq!(parser.parse("-123.123456").unwrap(), "-123.123456");
@@ -164,7 +164,7 @@ mod tests {
     }
 
     #[test]
-    fn symbol() {
+    fn symbol_parser() {
         let parser = parse_symbol();
 
         assert_eq!(parser.parse("97-something-bla-9_the \n").unwrap(), "97-something-bla-9_the");
