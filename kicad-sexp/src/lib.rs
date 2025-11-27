@@ -171,6 +171,13 @@ mod tests {
     }
 
     #[test]
+    fn float() {
+        let parser = parser();
+
+        assert_eq!(parser.parse("-12.345").unwrap()[0], Sexp::FloatLiteral("-12.345"));
+    }
+
+    #[test]
     fn kicad_sexp() {
         let parser = parser();
         let empty_sch_file = include_str!("../../reference-files/empty/empty.kicad_sch");
