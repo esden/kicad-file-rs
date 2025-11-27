@@ -1,6 +1,6 @@
 use chumsky::{prelude::*, text::whitespace};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Sexp<'a> {
     Invalid,
     Symbol(&'a str),
@@ -13,11 +13,11 @@ pub enum Sexp<'a> {
 
 fn parse_end<'src>() -> impl Parser<'src, &'src str, (), extra::Err<Simple<'src, char>>> + Copy {
     choice((
-        whitespace(),
+        whitespace().at_least(1),
         just(')').ignored().rewind(),
         end(),
     ))
-        .then_ignore(whitespace())
+        .ignore_then(whitespace()).ignored()
 }
 
 fn parse_escape<'src>() -> impl Parser<'src, &'src str, char, extra::Err<Simple<'src, char>>> + Copy {
@@ -111,7 +111,7 @@ pub fn pretty_print(sexps: &Vec<Sexp>) {
                 print!("(");
                 pretty_print(sexps);
                 print!(") ");
-            },
+            }
         }
     }
 }
